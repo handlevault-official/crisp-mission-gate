@@ -460,15 +460,19 @@
         }
 
         function showSuccess() {
-            document.getElementById('stepGate').classList.add('hidden');
+    document.getElementById('stepGate').classList.add('hidden');
+    document.getElementById('resName').innerText = missionData.name;
+    document.getElementById('resTier').innerText = missionData.tier;
+    document.getElementById('resOp').innerText = missionData.op;
+    document.getElementById('resCode').innerText = 'SEC-OP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+    
+    document.getElementById('stepPass').classList.remove('hidden');
+}
 
-            document.getElementById('resName').innerText = missionData.name;
-            document.getElementById('resTier').innerText = missionData.tier;
-            document.getElementById('resOp').innerText = missionData.op;
-            document.getElementById('resCode').innerText = 'SEC-OP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
-            
-            document.getElementById('stepPass').classList.remove('hidden');
-        }
-    </script>
+
+            <!-- Dito nagtatapos ang UI / HTML elements mo -->
+
+    <!-- Script para ikonekta ang logic mula sa repo.js -->
+    <script src="repo.js"></script>
 </body>
 </html>
