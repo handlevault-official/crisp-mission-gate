@@ -1,4 +1,4 @@
-// --- repo.js: Central Logic Handler ---
+// --- Mission Gate: repo.js (Central Logic) ---
 
 let currentTheme = 'dark';
 function toggleTheme() {
@@ -7,7 +7,7 @@ function toggleTheme() {
 }
 
 let step = 1;
-let userData = { name: '', scope: '', code: '' };
+let missionData = { name: '', tier: '', op: '' };
 
 function openGate() {
     document.getElementById('stepEnvelope').classList.add('hidden');
@@ -18,28 +18,28 @@ function openGate() {
 function renderQuestion() {
     document.getElementById('errorMsg').innerText = '';
     document.getElementById('btnBack').classList.toggle('hidden', step === 1);
-    document.getElementById('stepIndicator').innerText = `Stage ${step} of 3 • Verification`;
+    document.getElementById('stepIndicator').innerText = `Mission Stage ${step} of 3`;
 
     let title = '', desc = '', html = '';
 
     if (step === 1) {
-        title = "Client / Project Name";
-        desc = "Ilagay ang pangalan ng kliyente o proyekto.";
-        html = `<input type="text" id="ansVal" placeholder="Crisp Enterprise" value="${userData.name}">`;
+        title = "Mission / Target Name";
+        desc = "Ilagay ang pangalan ng operasyon o target project.";
+        html = `<input type="text" id="ansVal" placeholder="Project Titan" value="${missionData.name}">`;
     } else if (step === 2) {
-        title = "Access Authorization Level";
-        desc = "Piliin ang antas ng clearance o lisensya.";
+        title = "Security Tier / Level";
+        desc = "Piliin ang clearance level ng misyon.";
         html = `<select id="ansVal">
-            <option value="">Pili ng Level...</option>
-            <option value="Full Agency Bundle">Full Agency Bundle 💎</option>
-            <option value="Custom Project Build">Custom Project Build 🚀</option>
-            <option value="Standard Template">Standard Template 🛡️</option>
+            <option value="">Pili ng Tier...</option>
+            <option value="Tier 1 - Alpha">Tier 1 - Alpha ⚡</option>
+            <option value="Tier 2 - Bravo">Tier 2 - Bravo 🛡️</option>
+            <option value="Tier 3 - Omega">Tier 3 - Omega 💎</option>
         </select>`;
     } else if (step === 3) {
-        title = "Security Passphrase / ID";
-        desc = "Maglagay ng opisyal na reference code.";
-        html = `<input type="text" id="ansVal" placeholder="CRISP-2026-KEY" value="${userData.code}">`;
-        document.getElementById('btnNext').innerText = "Verify & Initialize ➔";
+        title = "Operational Focus (OP)";
+        desc = "Ilagay ang pangunahing layunin o layon ng operasyon.";
+        html = `<input type="text" id="ansVal" placeholder="System Migration & Deployment" value="${missionData.op}">`;
+        document.getElementById('btnNext').innerText = "Initialize Mission ➔";
     }
 
     if (step < 3) document.getElementById('btnNext').innerText = "Susunod ➔";
@@ -59,12 +59,11 @@ function nextStep() {
         return;
     }
 
-    if (step === 1) userData.name = val;
-    if (step === 2) userData.scope = val;
+    if (step === 1) missionData.name = val;
+    if (step === 2) missionData.tier = val;
     if (step === 3) {
-        userData.code = val;
-        alert(`🎉 Successfully Verified for ${userData.name}! Scope: ${userData.scope}`);
-        location.reload();
+        missionData.op = val;
+        showSuccess();
         return;
     }
 
@@ -77,4 +76,15 @@ function prevStep() {
         step--;
         renderQuestion();
     }
+}
+
+function showSuccess() {
+    document.getElementById('stepGate').classList.add('hidden');
+    
+    document.getElementById('resName').innerText = missionData.name;
+    document.getElementById('resTier').innerText = missionData.tier;
+    document.getElementById('resOp').innerText = missionData.op;
+    document.getElementById('resCode').innerText = 'SEC-OP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+    
+    document.getElementById('stepPass').classList.remove('hidden');
 }
