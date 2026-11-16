@@ -1,0 +1,10 @@
+{
+  "name": "Crisp Mission Gate",
+  "short_name": "MissionGate",
+  "description": "Top-secret classified dossier and tactical briefing portal.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#090a0f",
+  "theme_color": "#f59e0b",
+  "icons": []
+}
