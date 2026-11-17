@@ -3,478 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crisp Mission Gate — Top Secret Classified Dossier</title>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#090a0f">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Crisp Suite — Mission Gate</title>
     <style>
         :root {
-            --bg-main: #090a0f; /* Deep Obsidian / Tactical Dark */
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --accent: #f59e0b; /* Amber / Tactical Gold */
-            --accent-glow: rgba(245, 158, 11, 0.3);
-            --danger: #ef4444; /* Classified Red */
-            --border: rgba(245, 158, 11, 0.25);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --input-bg: rgba(9, 10, 15, 0.85);
+            --bg-color: #0f1117;
+            --card-bg: #161a29;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #f2c879;
+            --border: rgba(242, 200, 121, 0.3);
         }
 
-        [data-theme="light"] {
-            --bg-main: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --accent: #d97706;
-            --accent-glow: rgba(217, 119, 6, 0.15);
-            --danger: #dc2626;
-            --border: rgba(217, 119, 6, 0.2);
-            --text-main: #0f172a;
+        body.light-theme {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
             --text-muted: #64748b;
-            --input-bg: rgba(241, 245, 249, 0.9);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            --accent: #d97706;
+            --border: rgba(217, 119, 6, 0.3);
         }
 
         body {
-            background: var(--bg-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .hidden { display: none !important; }
-
-        /* Theme Toggle Button */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        .gate-container {
             background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 14px;
-            border-radius: 999px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 100;
-        }
-
-        /* --- STEP 1: CLASSIFIED FOLDER / ENVELOPE --- */
-        .envelope-wrapper {
-            perspective: 1000px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .envelope {
-            position: relative;
-            width: 340px;
-            height: 230px;
-            background: linear-gradient(135deg, #1e1b18, #0d0f14);
-            border: 2px dashed var(--accent);
-            border-radius: 8px;
-            margin: 0 auto 25px auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.15);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .envelope-wrapper:hover .envelope {
-            transform: translateY(-8px) scale(1.02);
-        }
-
-        .classified-stamp {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            border: 2px solid var(--danger);
-            color: var(--danger);
-            padding: 4px 8px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transform: rotate(-12deg);
-            opacity: 0.85;
-        }
-
-        .env-prompt {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.2rem;
-            color: var(--accent);
-            letter-spacing: 2px;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        .env-sub { font-size: 0.8rem; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; }
-
-        /* --- STEP 2: TACTICAL SCREENING CARD --- */
-        .gate-card {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-            animation: slideUp 0.5s ease forwards;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .step-indicator {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .question-title {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        .question-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 22px;
-            line-height: 1.5;
-        }
-
-        .form-group { margin-bottom: 18px; }
-
-        input, select {
+            padding: 30px;
+            max-width: 600px;
             width: 100%;
-            padding: 14px 16px;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 0.95rem;
-            outline: none;
-            font-family: 'Share Tech Mono', monospace;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        input:focus, select:focus { border-color: var(--accent); }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-next, .btn-back {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-family: 'Share Tech Mono', monospace;
-            letter-spacing: 1px;
-        }
-
-        .btn-next {
-            background: linear-gradient(135deg, var(--accent), #d97706);
-            color: #090a0f;
-            box-shadow: 0 8px 20px var(--accent-glow);
-        }
-
-        .btn-back {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        .error-text {
-            color: var(--danger);
-            font-size: 0.82rem;
-            margin-top: 10px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* --- STEP 3: MISSION BRIEFING PASS --- */
-        .vip-pass {
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            border: 2px solid var(--accent);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 25px 60px rgba(245, 158, 11, 0.2);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .success-icon {
-            font-size: 50px;
-            margin-bottom: 12px;
-            animation: pulseIcon 1.5s infinite;
-        }
-
-        @keyframes pulseIcon {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-
-        .vip-pass h2 {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.4rem;
-            color: var(--accent);
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
-
-        .ticket-box {
-            background: var(--input-bg);
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            padding: 18px;
-            margin: 20px 0;
-            text-align: left;
-            font-size: 0.88rem;
-        }
-
-        .ticket-row {
+        .header-controls {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            align-items: center;
+            margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
 
-        .ticket-row:last-child { border-bottom: none; }
-        .t-label { color: var(--text-muted); font-family: 'Share Tech Mono', monospace; }
-        .t-val { font-weight: 700; color: var(--text-main); text-align: right; font-family: 'Share Tech Mono', monospace; }
-
-        .btn-action-group {
+        .controls-group {
             display: flex;
             gap: 10px;
         }
 
-        .btn-action {
-            flex: 1;
-            padding: 13px;
-            background: linear-gradient(135deg, var(--accent), #d97706);
-            color: #090a0f;
-            border: none;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.9rem;
+        button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 8px 20px var(--accent-glow);
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .btn-decline {
-            flex: 1;
-            padding: 13px;
-            background: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            font-family: 'Share Tech Mono', monospace;
+        button:hover {
+            background: var(--accent);
+            color: #0f1117;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .action-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: var(--accent);
+            color: #0f1117;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
-<body data-theme="dark">
+<body>
 
-    <button class="theme-toggle" onclick="toggleTheme()">☀️ / 🌙 Theme</button>
-
-    <!-- STEP 1: CLASSIFIED DOSSIER ENVELOPE -->
-    <div class="envelope-wrapper" id="stepEnvelope" onclick="openEnvelope()">
-        <div class="envelope" id="envelopeObj">
-            <div class="classified-stamp">TOP SECRET</div>
-            <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
-            <div class="env-prompt">CRISP MISSION GATE</div>
-            <div class="env-sub">Tap to decrypt classified dossier</div>
-        </div>
-    </div>
-
-    <!-- STEP 2: TACTICAL SCREENING GATE -->
-    <div class="gate-card hidden" id="stepGate">
-        <div class="step-indicator" id="stepIndicator">Stage 1 of 4 • Clearance</div>
-        <div class="question-title" id="qTitle">Agent Alias / Name</div>
-        <div class="question-desc" id="qDesc">Ilagay ang iyong opisyal na alyas o pangalan para sa operasyon.</div>
-
-        <div class="form-group" id="inputContainer">
-            <!-- Dynamically injected input per question -->
+    <div class="gate-container">
+        <div class="header-controls">
+            <span style="font-weight: bold; color: var(--accent);">Crisp Suite • Mission Gate</span>
+            <div class="controls-group">
+                <button id="langToggle" onclick="toggleLanguage()">EN / TL</button>
+                <button id="themeToggle" onclick="toggleTheme()">☀️ / 🌙</button>
+            </div>
         </div>
 
-        <div class="error-text" id="errorMsg"></div>
-
-        <div class="btn-group">
-            <button class="btn-back hidden" id="btnBack" onclick="prevStep()">Bumalik</button>
-            <button class="btn-next" id="btnNext" onclick="nextStep()">Susunod ➔</button>
-        </div>
-    </div>
-
-    <!-- STEP 3: MISSION BRIEFING PASS -->
-    <div class="vip-pass hidden" id="stepPass">
-        <div class="success-icon">🎯</div>
-        <h2 id="successHeader">Mission Clearance Granted</h2>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; font-family: 'Share Tech Mono', monospace;">Na-verify ang tactical credentials.</p>
-
-        <div class="ticket-box">
-            <div class="ticket-row"><span class="t-label">Agent:</span><span class="t-val" id="resName"></span></div>
-            <div class="ticket-row"><span class="t-label">Security Tier:</span><span class="t-val" id="resTier"></span></div>
-            <div class="ticket-row"><span class="t-label">Operation:</span><span class="t-val" id="resOp"></span></div>
-            <div class="ticket-row"><span class="t-label">Clearance ID:</span><span class="t-val" style="color: var(--accent);" id="resCode"></span></div>
-        </div>
-
-        <div class="btn-action-group">
-            <button class="btn-action" onclick="alert('🎯 Mission Accepted! Standby for encrypted telemetry data.')">Accept Mission 🎯</button>
-            <button class="btn-decline" onclick="alert('⚠️ Mission Aborted. Log wiped securely.')">Abort ⚠️</button>
+        <div id="content">
+            <h2 id="title">Mission Control & Objectives</h2>
+            <p id="desc">Welcome to the Mission Gate. Define your core objectives, track your strategic milestones, and execute your digital goals with precise framework alignment.</p>
+            <a href="#" class="action-btn" id="ctaBtn">Enter Mission Portal ↗</a>
         </div>
     </div>
 
     <script>
-        let currentTheme = 'dark';
+        // Language Data
+        const translations = {
+            en: {
+                title: "Mission Control & Objectives",
+                desc: "Welcome to the Mission Gate. Define your core objectives, track your strategic milestones, and execute your digital goals with precise framework alignment.",
+                cta: "Enter Mission Portal ↗"
+            },
+            tl: {
+                title: "Gabay sa Misyon at mga Layunin",
+                desc: "Maligayang pagdating sa Mission Gate. Itakda ang iyong mga pangunahing layunin, subaybayan ang mga estratehikong hakbang, at tuparin ang iyong mga mithiin sa tamang sistema.",
+                cta: "Buksan ang Mission Portal ↗"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'tl' : 'en';
+            document.getElementById('title').innerText = translations[currentLang].title;
+            document.getElementById('desc').innerText = translations[currentLang].desc;
+            document.getElementById('ctaBtn').innerText = translations[currentLang].cta;
+        }
+
         function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', currentTheme);
+            document.body.classList.toggle('light-theme');
         }
+    </script>
 
-        let step = 1;
-        let missionData = { name: '', code: '', tier: '', op: '' };
-
-        function openEnvelope() {
-            document.getElementById('envelopeObj').style.transform = "scale(0.95) rotateX(10deg)";
-            setTimeout(() => {
-                document.getElementById('stepEnvelope').classList.add('hidden');
-                document.getElementById('stepGate').classList.remove('hidden');
-                renderQuestion();
-            }, 300);
-        }
-
-        function renderQuestion() {
-            document.getElementById('errorMsg').innerText = '';
-            document.getElementById('btnBack').classList.toggle('hidden', step === 1);
-            
-            const totalSteps = 4;
-            document.getElementById('stepIndicator').innerText = `Stage ${step} of ${totalSteps} • Clearance`;
-
-            let title = '', desc = '', html = '';
-
-            if (step === 1) {
-                title = "Agent Alias / Name";
-                desc = "Ilagay ang pangalan o callsign para sa secure registry.";
-                html = `<input type="text" id="ansVal" placeholder="Agent Viper / John" value="${missionData.name}">`;
-            } else if (step === 2) {
-                title = "Security Clearance Passcode";
-                desc = "Ilagay ang cryptic authorization key na ibinigay sa iyo.";
-                html = `<input type="password" id="ansVal" placeholder="••••••••" value="${missionData.code}">`;
-            } else if (step === 3) {
-                title = "Security Tier Level";
-                desc = "Piliin ang iyong operational clearance level.";
-                html = `<select id="ansVal">
-                    <option value="">Pili ng Tier...</option>
-                    <option value="Tier-1 Alpha Operator">Tier-1 Alpha Operator ⚡</option>
-                    <option value="Strategic Command Lead">Strategic Command Lead 🛡️</option>
-                    <option value="Cyber Intelligence Specialist">Cyber Intelligence Specialist 💻</option>
-                    <option value="Special Reconnaissance Unit">Special Reconnaissance Unit 🔭</option>
-                </select>`;
-            } else if (step === 4) {
-                title = "Assigned Operation Target";
-                desc = "Piliin ang pangunahing layunin ng operasyon.";
-                html = `<select id="ansVal">
-                    <option value="">Pili ng Target...</option>
-                    <option value="Project Phoenix Protocol">Project Phoenix Protocol 🔥</option>
-                    <option value="Operation Deep Obsidian">Operation Deep Obsidian 🌑</option>
-                    <option value="Cyber Grid Defense System">Cyber Grid Defense System 🛡️</option>
-                </select>`;
-                document.getElementById('btnNext').innerText = "Initiate Clearance 🚀";
-            }
-
-            if(step < 4) document.getElementById('btnNext').innerText = "Susunod ➔";
-
-            document.getElementById('qTitle').innerText = title;
-            document.getElementById('qDesc').innerText = desc;
-            document.getElementById('inputContainer').innerHTML = html;
-        }
-
-        function nextStep() {
-            const valElem = document.getElementById('ansVal');
-            const err = document.getElementById('errorMsg');
-            const val = valElem ? valElem.value.trim() : '';
-
-            if (!val) {
-                err.innerText = "⚠️ Required field. Paki-fill up bago tumuloy.";
-                return;
-            }
-
-            if (step === 1) missionData.name = val;
-            if (step === 2) missionData.code = val;
-            if (step === 3) missionData.tier = val;
-            if (step === 4) {
-                missionData.op = val;
-                showSuccess();
-                return;
-            }
-
-            step++;
-            renderQuestion();
-        }
-
-        function prevStep() {
-            if (step > 1) { step--; renderQuestion(); }
-        }
-
-    <!-- Dito nagtatapos ang UI / HTML elements mo -->
-    
-<!-- 1. Dito mo nilagay ang function mo directly sa index.html -->
-<script>
-    function showSuccess() {
-        document.getElementById('stepGate').classList.add('hidden');
-        document.getElementById('resName').innerText = missionData.name;
-        document.getElementById('resTier').innerText = missionData.tier;
-        document.getElementById('resOp').innerText = missionData.op;
-        document.getElementById('resCode').innerText = 'SEC-OP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
-        
-        document.getElementById('stepPass').classList.remove('hidden');
-    }
-</script>
-    
-<!-- 2. Script para ikonekta ang logic mula sa repo.js -->
-<script src="repo.js"></script>
 </body>
 </html>
