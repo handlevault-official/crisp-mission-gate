@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1020">
-<meta name="description" content="Crisp Suite — 3D Mission Gate interactive execution module.">
+<meta name="description" content="Crisp Suite — 3D Mission Gate interactive encrypted module.">
 <title>Crisp Suite — 3D Mission Gate</title>
 <style>
 :root{color-scheme:dark;--bg:#090d19;--panel:#121a2d;--line:rgba(190,205,235,.14);--text:#f4f7ff;--muted:#aab5ca;--purple:#a99aff;--mint:#6ce0d0;--gold:#f2c879}
@@ -27,8 +27,33 @@ body.light-theme{color-scheme:light;--bg:#f8fafc;--panel:#ffffff;--line:rgba(30,
 
 .stamp{display:inline-block;background:rgba(242,200,121,.12);border:1px dashed var(--gold);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:850;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px}
 
-h2{font-size:clamp(1.6rem,3vw,2.2rem);margin:0 0 10px;letter-spacing:-.03em}
-p{color:var(--muted);font-size:.98rem;margin:0 0 24px;line-height:1.6}
+/* Sender & Receiver Info Box */
+.metadata-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+.meta-item span {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 3px;
+}
+.meta-item strong {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-family: monospace; /* Gives a technical/encrypted feel */
+}
+
+h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;letter-spacing:-.03em}
+p{color:var(--muted);font-size:.95rem;margin:0 0 24px;line-height:1.6}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:999px;font-weight:800;font-size:.9rem;border:0;background:linear-gradient(110deg,var(--mint),#b9adff);color:#0b1020;text-decoration:none;transition:.2s}
 .btn:hover{transform:translateY(-2px);opacity:.95}
@@ -47,23 +72,44 @@ p{color:var(--muted);font-size:.98rem;margin:0 0 24px;line-height:1.6}
         </div>
 
         <div class="stamp" id="stampText">Classified Objective • Active</div>
+
+        <!-- Sender and Receiver Section -->
+        <div class="metadata-box">
+            <div class="meta-item">
+                <span id="toLabel">To (Receiver)</span>
+                <strong id="receiverName">CMDR-117</strong>
+            </div>
+            <div class="meta-item">
+                <span id="fromLabel">From (Sender)</span>
+                <strong id="senderName">CENTRAL-SYS</strong>
+            </div>
+        </div>
+
         <h2 id="title">Mission Control &amp; Strategic Execution</h2>
         <p id="desc">Welcome to the 3D Mission Gate. Define your core tactical objectives, track critical project milestones, and execute deliverables with precision framework alignment.</p>
         <a class="btn" href="https://vaultkeeper117.gumroad.com/" target="_blank" rel="noopener" id="ctaBtn">Initialize Mission Portal ↗</a>
     </div>
 </div>
 
-<!-- Dual-Language & Theme Controller Script -->
+<!-- Dual-Language, Theme & Encrypted Text Effect Controller -->
 <script>
     const translations = {
         en: {
             stamp: "Classified Objective • Active",
+            toLabel: "To (Receiver)",
+            fromLabel: "From (Sender)",
+            receiverName: "CMDR-117",
+            senderName: "CENTRAL-SYS",
             title: "Mission Control & Strategic Execution",
             desc: "Welcome to the 3D Mission Gate. Define your core tactical objectives, track critical project milestones, and execute deliverables with precision framework alignment.",
             cta: "Initialize Mission Portal ↗"
         },
         tl: {
             stamp: "Kumpidensyal na Layunin • Aktibo",
+            toLabel: "Para kay (Receiver)",
+            fromLabel: "Mula kay (Sender)",
+            receiverName: "CMDR-117",
+            senderName: "CENTRAL-SYS",
             title: "Gabay sa Misyon at Estratehikong Aksyon",
             desc: "Maligayang pagdating sa 3D Mission Gate. Itakda ang iyong mga pangunahing layunin, subaybayan ang mga hakbang ng proyekto, at isagawa ang iyong mga mithiin gamit ang tamang sistema.",
             cta: "Buksan ang Mission Portal ↗"
@@ -72,11 +118,44 @@ p{color:var(--muted);font-size:.98rem;margin:0 0 24px;line-height:1.6}
 
     let currentLang = 'en';
 
+    // Hacker/Encrypted text decoding effect generator
+    function encryptEffect(elementId, targetText) {
+        const el = document.getElementById(elementId);
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>_-";
+        let iteration = 0;
+        
+        clearInterval(el.interval);
+        
+        el.interval = setInterval(() => {
+            el.innerText = targetText
+                .split("")
+                .map((char, index) => {
+                    if (index < iteration) {
+                        return targetText[index];
+                    }
+                    if (char === " ") return " ";
+                    return chars[Math.floor(Math.random() * chars.length)];
+                })
+                .join("");
+
+            if (iteration >= targetText.length) {
+                clearInterval(el.interval);
+            }
+            iteration += 1/2;
+        }, 30);
+    }
+
     function toggleLanguage() {
         currentLang = currentLang === 'en' ? 'tl' : 'en';
-        document.getElementById('stampText').innerText = translations[currentLang].stamp;
-        document.getElementById('title').innerText = translations[currentLang].title;
-        document.getElementById('desc').innerText = translations[currentLang].desc;
+        
+        // Apply encrypted decoding effect to text elements on language switch
+        encryptEffect('stampText', translations[currentLang].stamp);
+        document.getElementById('toLabel').innerText = translations[currentLang].toLabel;
+        document.getElementById('fromLabel').innerText = translations[currentLang].fromLabel;
+        document.getElementById('receiverName').innerText = translations[currentLang].receiverName;
+        document.getElementById('senderName').innerText = translations[currentLang].senderName;
+        encryptEffect('title', translations[currentLang].title);
+        encryptEffect('desc', translations[currentLang].desc);
         document.getElementById('ctaBtn').innerText = translations[currentLang].cta;
     }
 
