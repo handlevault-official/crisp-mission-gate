@@ -1,169 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b1020">
-<meta name="description" content="Crisp Suite — 3D Mission Gate interactive execution module.">
-<title>Crisp Suite — 3D Mission Gate</title>
-<style>
-:root{color-scheme:dark;--bg:#090d19;--panel:#121a2d;--line:rgba(190,205,235,.14);--text:#f4f7ff;--muted:#aab5ca;--purple:#a99aff;--mint:#6ce0d0;--gold:#f2c879}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(ellipse at 12% 0%,rgba(115,94,220,.18),transparent 34rem),radial-gradient(ellipse at 90% 15%,rgba(65,190,180,.1),transparent 30rem),var(--bg);color:var(--text);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;perspective:1200px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVS Mission Gate — Dual Support Message Receiver & Sender</title>
+    <!-- Custom Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2338bdf8%22><path d=%22M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z%22/></svg>">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --btn-send: #34d399;
+            --success-color: #34d399;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px 10px;
+        }
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-body.light-theme{color-scheme:light;--bg:#f8fafc;--panel:#ffffff;--line:rgba(30,41,59,.14);--text:#1e293b;--muted:#64748b;--purple:#7c3aed;--mint:#0d9488;--gold:#d97706}
+        .main-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
 
-.container{width:min(640px,calc(100% - 36px));margin:auto}
-.gate-card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:32px;box-shadow:0 20px 40px rgba(0,0,0,0.3);transform-style:preserve-3d;transition:transform .4s cubic-bezier(.2,.8,.2,1),background .3s,border-color .3s}
-.gate-card:hover{transform:translateY(-4px) rotateX(1deg) rotateY(-1deg)}
+        /* Mission Gate Box */
+        .gate-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .gate-card h2 {
+            margin-top: 0;
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #0f172a;
+            color: white;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        select.form-control {
+            cursor: pointer;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-submit {
+            background-color: var(--btn-send);
+            color: #0f172a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+        .btn-submit:hover { opacity: 0.9; }
 
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;border-bottom:1px solid var(--line);padding-bottom:14px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:.04em;font-size:.9rem}
-.mark{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--mint),var(--purple));color:#101326;font-weight:950}
+        /* Received Messages Log */
+        .message-log {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .message-log h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+        .message-item {
+            background-color: #0f172a;
+            border-left: 4px solid var(--accent-color);
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .message-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
 
-.controls{display:flex;gap:8px}
-.ctl-btn{background:#ffffff08;border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.8rem;transition:.2s}
-.ctl-btn:hover{background:var(--purple);color:white;border-color:var(--purple)}
-
-.stamp{display:inline-block;background:rgba(242,200,121,.12);border:1px dashed var(--gold);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:850;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px}
-
-/* Sender & Receiver Info Box */
-.metadata-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-}
-.meta-item span {
-    display: block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    margin-bottom: 3px;
-}
-.meta-item strong {
-    font-size: 0.95rem;
-    color: var(--text);
-    font-family: monospace;
-}
-
-h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;letter-spacing:-.03em}
-p{color:var(--muted);font-size:.95rem;margin:0 0 24px;line-height:1.6}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:999px;font-weight:800;font-size:.9rem;border:0;background:linear-gradient(110deg,var(--mint),#b9adff);color:#0b1020;text-decoration:none;transition:.2s}
-.btn:hover{transform:translateY(-2px);opacity:.95}
-</style>
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="gate-card">
-        <div class="top-bar">
-            <div class="brand"><span class="mark">C</span> CRISP SUITE</div>
-            <div class="controls">
-                <button class="ctl-btn" id="langToggle" onclick="toggleLanguage()">EN / TL</button>
-                <button class="ctl-btn" id="themeToggle" onclick="toggleTheme()">☀️ / 🌙</button>
+    <header>
+        <h1>🔐 HVS Mission Gate</h1>
+        <p>Dual-Support Message Receiver &amp; Sender (Tagalog / English Mission Logs)</p>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Sender Box -->
+        <div class="gate-card">
+            <h2>📤 Send Mission Update / Magpadala ng Misyon</h2>
+            
+            <div class="form-group">
+                <label for="senderName">Agent Name / Code:</label>
+                <input type="text" id="senderName" class="form-control" placeholder="e.g., Agent 117 / Day 15 Savings">
+            </div>
+
+            <div class="form-group">
+                <label for="missionCategory">Mission Category / Uri ng Misyon:</label>
+                <select id="missionCategory" class="form-control">
+                    <option value="100-Day Savings Milestone">🎯 100-Day Savings &amp; Ipon Challenge</option>
+                    <option value="Guest & Budget Verification">💌 Guest &amp; Budget Verification Gate</option>
+                    <option value="Studio Output Update">🎨 Studio Milestone &amp; Creative Output</option>
+                    <option value="General Secure Message">🔒 General Secret Mission Message</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="senderMessage">Message / Report (Tagalog / English Dual Support):</label>
+                <textarea id="senderMessage" class="form-control" placeholder="Isulat ang iyong ulat o tagumpay dito... / Enter your mission update here..."></textarea>
+            </div>
+
+            <button class="btn-submit" onclick="sendMessage()">Transmit Message / Ipadala sa Gate</button>
+        </div>
+
+        <!-- Receiver / Log Box -->
+        <div class="message-log">
+            <h3>📥 Mission Receiver Log (Incoming Updates)</h3>
+            <div id="messageContainer">
+                <div class="message-item">
+                    <div class="message-meta">System — Status: Secure &amp; Online</div>
+                    <div>Gate is active and ready to receive dual-support mission transmissions. / Handa nang tumanggap ng mga ulat.</div>
+                </div>
             </div>
         </div>
 
-        <div class="stamp" id="stampText">Classified Objective • Active</div>
-
-        <!-- Sender and Receiver Section -->
-        <div class="metadata-box">
-            <div class="meta-item">
-                <span id="toLabel">To (Receiver)</span>
-                <strong id="receiverName">CMDR-117</strong>
-            </div>
-            <div class="meta-item">
-                <span id="fromLabel">From (Sender)</span>
-                <strong id="senderName">CENTRAL-SYS</strong>
-            </div>
-        </div>
-
-        <h2 id="title">Mission Control &amp; Strategic Execution</h2>
-        <p id="desc">Welcome to the 3D Mission Gate. Define your core tactical objectives, track critical project milestones, and execute deliverables with precision framework alignment.</p>
-        <a class="btn" href="https://handlevault-official.github.io/crisp-mission-gate/" target="_blank" rel="noopener" id="ctaBtn">Initialize Mission Portal ↗</a>
     </div>
-</div>
 
-<!-- Dual-Language, Theme & Encrypted Text Effect Controller -->
-<script>
-    const translations = {
-        en: {
-            stamp: "Classified Objective • Active",
-            toLabel: "To (Receiver)",
-            fromLabel: "From (Sender)",
-            receiverName: "CMDR-117",
-            senderName: "CENTRAL-SYS",
-            title: "Mission Control & Strategic Execution",
-            desc: "Welcome to the 3D Mission Gate. Define your core tactical objectives, track critical project milestones, and execute deliverables with precision framework alignment.",
-            cta: "Initialize Mission Portal ↗"
-        },
-        tl: {
-            stamp: "Kumpidensyal na Layunin • Aktibo",
-            toLabel: "Para kay (Receiver)",
-            fromLabel: "Mula kay (Sender)",
-            receiverName: "CMDR-117",
-            senderName: "CENTRAL-SYS",
-            title: "Gabay sa Misyon at Estratehikong Aksyon",
-            desc: "Maligayang pagdating sa 3D Mission Gate. Itakda ang iyong mga pangunahing layunin, subaybayan ang mga hakbang ng proyekto, at isagawa ang iyong mga mithiin gamit ang tamang sistema.",
-            cta: "Buksan ang Mission Portal ↗"
-        }
-    };
+    <script>
+        function sendMessage() {
+            const name = document.getElementById('senderName').value.trim();
+            const category = document.getElementById('missionCategory').value;
+            const message = document.getElementById('senderMessage').value.trim();
+            const container = document.getElementById('messageContainer');
 
-    let currentLang = 'en';
-
-    function encryptEffect(elementId, targetText) {
-        const el = document.getElementById(elementId);
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>_-";
-        let iteration = 0;
-        
-        clearInterval(el.interval);
-        
-        el.interval = setInterval(() => {
-            el.innerText = targetText
-                .split("")
-                .map((char, index) => {
-                    if (index < iteration) {
-                        return targetText[index];
-                    }
-                    if (char === " ") return " ";
-                    return chars[Math.floor(Math.random() * chars.length)];
-                })
-                .join("");
-
-            if (iteration >= targetText.length) {
-                clearInterval(el.interval);
+            if(name === "" || message === "") {
+                alert("Please fill in both name and message / Mangyaring punan ang pangalan at mensahe.");
+                return;
             }
-            iteration += 1/2;
-        }, 30);
-    }
 
-    function toggleLanguage() {
-        currentLang = currentLang === 'en' ? 'tl' : 'en';
-        
-        encryptEffect('stampText', translations[currentLang].stamp);
-        document.getElementById('toLabel').innerText = translations[currentLang].toLabel;
-        document.getElementById('fromLabel').innerText = translations[currentLang].fromLabel;
-        document.getElementById('receiverName').innerText = translations[currentLang].receiverName;
-        document.getElementById('senderName').innerText = translations[currentLang].senderName;
-        encryptEffect('title', translations[currentLang].title);
-        encryptEffect('desc', translations[currentLang].desc);
-        document.getElementById('ctaBtn').innerText = translations[currentLang].cta;
-    }
+            const timeNow = new Date().toLocaleTimeString();
+            
+            const itemHTML = `
+                <div class="message-item">
+                    <div class="message-meta">From / Mula kay: <strong>${escapeHtml(name)}</strong> [<i>${escapeHtml(category)}</i>] — ${timeNow}</div>
+                    <div>${escapeHtml(message)}</div>
+                </div>
+            `;
 
-    function toggleTheme() {
-        document.body.classList.toggle('light-theme');
-    }
-</script>
+            container.insertAdjacentHTML('afterbegin', itemHTML);
 
-<!-- External Repository Data Script -->
-<script src="repo.js"></script>
+            // Clear inputs
+            document.getElementById('senderName').value = '';
+            document.getElementById('senderMessage').value = '';
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
+
+    <footer>
+        <p>&copy; 2026 HVS Mission Gate. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
